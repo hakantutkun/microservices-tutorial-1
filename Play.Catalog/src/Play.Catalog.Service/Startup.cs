@@ -42,7 +42,7 @@ namespace Play.Catalog.Service
             services.AddMongo()
                     .AddMongoRepository<Item>("items");
 
-            services.AddControllers(options =>
+            services.AddControllers(options => 
             {
                 options.SuppressAsyncSuffixInActionNames = false;
             });
