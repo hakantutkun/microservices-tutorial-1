@@ -9,24 +9,19 @@ namespace Play.Catalog.Service.Repositories
     /// <summary>
     /// Items Repository Class
     /// </summary>
-    public class ItemsRepository : IItemsRepository
+    public class MongoRepository<T> : IRepository<T> where T : IEntity
     {
         #region Members
 
         /// <summary>
-        /// Collection Name
-        /// </summary>
-        private const string collectionName = "items";
-
-        /// <summary>
         /// Database Collection
         /// </summary>
-        private readonly IMongoCollection<Item> dbCollection;
+        private readonly IMongoCollection<T> dbCollection;
 
         /// <summary>
         /// Filter Builder for MongoDB
         /// </summary>
-        private readonly FilterDefinitionBuilder<Item> filterBuilder = Builders<Item>.Filter;
+        private readonly FilterDefinitionBuilder<T> filterBuilder = Builders<T>.Filter;
 
         #endregion
 
@@ -35,10 +30,10 @@ namespace Play.Catalog.Service.Repositories
         /// <summary>
         /// Default Constructor
         /// </summary>
-        public ItemsRepository(IMongoDatabase database)
+        public MongoRepository(IMongoDatabase database, string collectionName)
         {
             // Set collection
-            dbCollection = database.GetCollection<Item>(collectionName);
+            dbCollection = database.GetCollection<T>(collectionName);
         }
 
         #endregion
@@ -49,7 +44,7 @@ namespace Play.Catalog.Service.Repositories
         /// Gets all items asynchronously.
         /// </summary>
         /// <returns>Collection of items.</returns>
-        public async Task<IReadOnlyCollection<Item>> GetAllAsync()
+        public async Task<IReadOnlyCollection<T>> GetAllAsync()
         {
             return await dbCollection.Find(filterBuilder.Empty).ToListAsync();
         }
@@ -59,10 +54,10 @@ namespace Play.Catalog.Service.Repositories
         /// </summary>
         /// <param name="id">The id of the requested item.</param>
         /// <returns>Returns requested item.</returns>
-        public async Task<Item> GetAsync(Guid id)
+        public async Task<T> GetAsync(Guid id)
         {
             // Create filter for id matching.
-            FilterDefinition<Item> filter = filterBuilder.Eq(entity => entity.Id, id);
+            FilterDefinition<T> filter = filterBuilder.Eq(entity => entity.Id, id);
 
             // Return matched item.
             return await dbCollection.Find(filter).FirstOrDefaultAsync();
@@ -72,7 +67,7 @@ namespace Play.Catalog.Service.Repositories
         /// Adds New Item to the collection.
         /// </summary>
         /// <param name="entity">Received Item that will be added to collection.</param>
-        public async Task CreateAsync(Item entity)
+        public async Task CreateAsync(T entity)
         {
             // Check if received item is null
             if (entity == null)
@@ -88,7 +83,7 @@ namespace Play.Catalog.Service.Repositories
         /// Updates specific existing item.
         /// </summary>
         /// <param name="entity">Item that will be updated</param>
-        public async Task UpdateAsync(Item entity)
+        public async Task UpdateAsync(T entity)
         {
             // Check if received item is null
             if (entity == null)
@@ -97,7 +92,7 @@ namespace Play.Catalog.Service.Repositories
             }
 
             // Create filter for update process.
-            FilterDefinition<Item> filter = filterBuilder.Eq(existingEntity => existingEntity.Id, entity.Id);
+            FilterDefinition<T> filter = filterBuilder.Eq(existingEntity => existingEntity.Id, entity.Id);
 
             // Update existing item.
             await dbCollection.ReplaceOneAsync(filter, entity);
@@ -110,7 +105,7 @@ namespace Play.Catalog.Service.Repositories
         public async Task RemoveAsync(Guid id)
         {
             // Create filter for delete process.
-            FilterDefinition<Item> filter = filterBuilder.Eq(entity => entity.Id, id);
+            FilterDefinition<T> filter = filterBuilder.Eq(entity => entity.Id, id);
 
             // Remove item from collection.
             await dbCollection.DeleteOneAsync(filter);
