@@ -11,5 +11,16 @@ services:
     volumes:
       - mongodbdata:/data/db
 
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    ports:
+      - 5672:5672 # -> this one is for publish or consume messages
+      - 15672:15672 # -> this one is for going to rabbit mq portal
+    volumes:
+      - rabbitmqdata:/var/lib/rabbitmq
+    hostname: rabbitmq #-> this is associated with how rabbitmq stores data internally. If it was not set, it gets a random value each time we started the container. And the data will be stored in a different place.
+
 volumes:
   mongodbdata:
+  rabbitmqdata:
