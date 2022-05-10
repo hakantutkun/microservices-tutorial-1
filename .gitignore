@@ -1,6 +1,8 @@
 Play.Catalog/.vscode
 Play.Catalog/src/Play.Catalog.Service/bin
 Play.Catalog/src/Play.Catalog.Service/obj
+Play.Catalog/src/Play.Catalog.Contracts/bin
+Play.Catalog/src/Play.Catalog.Contracts/obj
 Play.Common/.vscode
 Play.Common/src/Play.Common/bin
 Play.Common/src/Play.Common/obj
