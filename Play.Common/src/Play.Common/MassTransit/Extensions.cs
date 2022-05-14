@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
@@ -13,12 +14,11 @@ namespace Play.Common.MassTransit
         {
             return services.AddMassTransit(configure =>
             {
+                configure.AddConsumers(Assembly.GetEntryAssembly());
                 configure.UsingRabbitMq((context, configurator) =>
                 {
-                    configure.AddConsumers(Assembly.GetEntryAssembly());
-
                     var configuration = context.GetService<IConfiguration>();
-                    // Read service settings from appsettings.json file.
+                   // Read service settings from appsettings.json file.
                     var serviceSettings = configuration.GetSection(nameof(ServiceSettings)).Get<ServiceSettings>();
                     var rabbitMQSettings = configuration.GetSection(nameof(RabbitMQSettings)).Get<RabbitMQSettings>();
                     configurator.Host(rabbitMQSettings.Host);
