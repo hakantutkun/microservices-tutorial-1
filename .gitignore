@@ -9,3 +9,5 @@ Play.Common/src/Play.Common/obj
 Play.Inventory/.vscode
 Play.Inventory/src/Play.Inventory.Service/bin
 Play.Inventory/src/Play.Inventory.Service/obj
+Play.Frontend/node_modules
+Play.Frontend/.vscode
